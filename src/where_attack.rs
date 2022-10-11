@@ -23,7 +23,6 @@ pub fn where_attack() -> AttackData {
     if !return_data.udp_mode {
         println!("Ai Mode?(y/n), This is helpful if you have a fast pc and/or you bottle neck is your wifi!");
         return_data.ai_mode = true_or_no();
-
         loop {
             println!("Proxy? (if you don't want one hit n)");
             let unparsed_str = get_input();
@@ -50,7 +49,7 @@ pub fn where_attack() -> AttackData {
     loop {
         println!("Threads? (if you get a dns error lower threads)");
         let unparsed_str = get_input();
-        match unparsed_str.parse() {
+        match unparsed_str.trim().parse() {
             Ok(num) => {
                 if let Ok(mut data) = SAFE_PUB_VAR.lock() {
                     data.threads_allowed = num;
