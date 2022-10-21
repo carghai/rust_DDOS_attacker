@@ -48,32 +48,18 @@ pub fn where_attack() -> AttackData {
     }
     loop {
         println!("Threads? (if you get a dns error lower threads)");
-        let unparsed_str = get_input();
-        match unparsed_str.trim().parse().clone() {
+        let unparsed_str: Result<u64 ,std::num::ParseIntError> = get_input().trim().parse();
+        match unparsed_str {
             Ok(num) => {
                 if let Ok(mut data) = SAFE_PUB_VAR.lock() {
-                    data.threads_allowed = num;
+                    data.threads_allowed = num as f64;
                     break;
                 } else {
                     println!("waiting on file lock");
                 }
             }
-            Err(_) => {
-                let second:Result<u64 ,std::num::ParseIntError> = unparsed_str.trim().parse();
-                match second {
-                    Ok(ok) => {
-                        if let Ok(mut data) = SAFE_PUB_VAR.lock() {
-                            data.threads_allowed = ok as f64;
-                            break;
-                        } else {
-                            println!("waiting on file lock");
-                        }
-                    }
-                    Err(e) => {
-                        println!("please write proper number\n (advanced error details: {})", e);
-                    }
-                }
-
+            Err(e) => {
+                println!("please write proper number\n (advanced error details: {})", e);
             }
         }
     }
