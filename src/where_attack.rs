@@ -58,7 +58,7 @@ pub fn where_attack() -> AttackData {
                     println!("waiting on file lock");
                 }
             }
-            Err(e) => {
+            Err(_) => {
                 let second:Result<u64 ,std::num::ParseIntError> = unparsed_str.trim().parse();
                 match second {
                     Ok(ok) => {
