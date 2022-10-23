@@ -1,4 +1,5 @@
 use std::io;
+
 use tokio::io::AsyncReadExt;
 
 use crate::extra_fn::proxy_set;
@@ -31,20 +32,31 @@ pub fn where_attack() -> AttackData {
                     break;
                 }
                 _ => {
-                    for unwrapped in headers_unparsed.split(',') {
+                    let parsing = headers_unparsed.split(',');
+                    let check_amount = parsing.clone().count();
+                    let mut amount_looped: u8 = 0;
+                    for unwrapped in parsing {
                         let mut final_unwrap = unwrapped.split(' ');
                         match final_unwrap.next() {
                             None => {
-                                println!("please make it like this [headerKey1 headerVal1,headerKey2 headerVal2,headerKey3 headerVal3] and try again")
+                                syntax_error();
                             }
-                            Some(data) => {
-
+                            Some(data) => unsafe {
+                                UNSAFE_PUB_VAR.headers.push(data.to_owned());
+                                match final_unwrap.nth(1) {
+                                    None => {
+                                        syntax_error();
+                                    }
+                                    Some(second_data) => {
+                                        UNSAFE_PUB_VAR.headers_val.push(second_data.to_owned());
+                                        amount_looped += 1;
+                                    }
+                                }
                             }
                         }
-                        // unsafe {
-                        //     UNSAFE_PUB_VAR.headers.push(cool.next().unwrap_or("").to_owned());
-                        //     UNSAFE_PUB_VAR.headers_val.push(cool.nth(1).unwrap_or("").to_owned());
-                        // }
+                    }
+                    if check_amount == amount_looped as usize {
+                        break;
                     }
                 }
             };
@@ -120,4 +132,8 @@ fn get_input() -> String {
             println!("please try again");
         }
     }
+}
+
+fn syntax_error() {
+    println!("please make it like this [headerKey1 headerVal1,headerKey2 headerVal2,headerKey3 headerVal3] and try again")
 }

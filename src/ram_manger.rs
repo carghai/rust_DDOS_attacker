@@ -30,7 +30,7 @@ pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| {
         amount_sent: 0.0,
         threads_on: 0.0,
         http_sender : reqwest::Client::new(),
-        headers : vec!["".to_owned(), "".to_owned(), "".to_owned()],
-        headers_val : vec!["".to_owned(), "".to_owned(), "".to_owned()],
+        headers : vec![],
+        headers_val : vec![],
     }
 });
