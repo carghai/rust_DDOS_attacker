@@ -45,28 +45,20 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
 
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        UNSAFE_PUB_VAR.http_sender
-            .get(&UNSAFE_PUB_VAR.attack_url)
-            .header(UNSAFE_PUB_VAR.headers.get(0)
-                        .unwrap_or(&"".to_owned()),
-                    UNSAFE_PUB_VAR
-                        .headers_val
-                        .get(0)
-                        .unwrap_or(&"".to_owned()))
-            .header(UNSAFE_PUB_VAR.headers.get(1)
-                        .unwrap_or(&"".to_owned()),
-                    UNSAFE_PUB_VAR
-                        .headers_val
-                        .get(1)
-                        .unwrap_or(&"".to_owned()))
-            .header(UNSAFE_PUB_VAR.headers.get(2)
-                        .unwrap_or(&"".to_owned()),
-                    UNSAFE_PUB_VAR
-                        .headers_val
-                        .get(2)
-                        .unwrap_or(&"".to_owned()))
-            .send()
-            .await
+        let mut https_builder = UNSAFE_PUB_VAR.http_sender
+            .get(&UNSAFE_PUB_VAR.attack_url);
+        for (index, header) in UNSAFE_PUB_VAR.headers.iter().enumerate() {
+            let use_header = UNSAFE_PUB_VAR.headers_val.get(index);
+            match use_header {
+                None=> {
+                    println!("Header Val Data Was Damaged, please restart the client but don't worry it is skipping this header")
+                },
+                Some(data) =>{
+                    https_builder = https_builder.header(header , data);
+                }
+            }
+        }
+        https_builder.send().await
     }
 }
 
