@@ -1,6 +1,5 @@
 use std::io;
 
-use tokio::io::AsyncReadExt;
 
 use crate::extra_fn::proxy_set;
 use crate::ram_manger::{SAFE_PUB_VAR, UNSAFE_PUB_VAR};
@@ -37,15 +36,17 @@ pub fn where_attack() -> AttackData {
                     let mut amount_looped: u8 = 0;
                     for unwrapped in parsing {
                         let mut final_unwrap = unwrapped.split(' ');
-                        match final_unwrap.next() {
+                        match final_unwrap.nth(0) {
                             None => {
                                 syntax_error();
+                                panic!()
                             }
                             Some(data) => unsafe {
                                 UNSAFE_PUB_VAR.headers.push(data.to_owned());
                                 match final_unwrap.nth(1) {
                                     None => {
                                         syntax_error();
+                                        panic!()
                                     }
                                     Some(second_data) => {
                                         UNSAFE_PUB_VAR.headers_val.push(second_data.to_owned());
