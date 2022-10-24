@@ -23,7 +23,7 @@ pub fn where_attack() -> AttackData {
     if !return_data.udp_mode {
         println!("Ai Mode?(y/n), This is helpful if you have a fast pc and/or you bottle neck is your wifi!");
         return_data.ai_mode = true_or_no();
-        println!("Headers?(supports 3 header like [headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3] you don't need to fill out and if you don't want this press n");
+        println!("Headers?(supports headers like [headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3] you don't need to fill out and if you don't want this press n");
         loop {
             let headers_unparsed = get_input().trim().to_owned();
             match &*headers_unparsed {
@@ -54,7 +54,7 @@ pub fn where_attack() -> AttackData {
                             }
                         }
                     }
-                    if check_amount == amount_looped as usize && check_amount <= 3 {
+                    if check_amount == amount_looped as usize {
                         break;
                     }
                 }
