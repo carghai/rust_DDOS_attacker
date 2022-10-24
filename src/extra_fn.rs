@@ -43,9 +43,23 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
     }
 }
 
+//Todo fix this
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        UNSAFE_PUB_VAR.http_sender.get(&UNSAFE_PUB_VAR.attack_url).send().await
+        let mut https_builder = UNSAFE_PUB_VAR.http_sender
+            .get(&UNSAFE_PUB_VAR.attack_url);
+        for (index, header) in UNSAFE_PUB_VAR.headers.iter().enumerate() {
+            let use_header = UNSAFE_PUB_VAR.headers_val.get(index);
+            match use_header {
+                None=> {
+                    println!("Header Val Data Was Damaged, please restart the client but don't worry it is skipping this header")
+                },
+                Some(data) =>{
+                    https_builder = https_builder.header(header , data);
+                }
+            }
+        }
+        https_builder.send().await
     }
 }
 
@@ -63,7 +77,7 @@ pub(crate) fn udp() -> UdpSocket {
             Ok(data) => { return data; }
             Err(data) => {
                 if error_much > 10 {
-                    panic!("Failed when starting udp, please check 8080 port and try again\n {}" , data);
+                    panic!("Failed when starting udp, please check 8080 port and try again\n {}", data);
                 }
                 thread::sleep(time::Duration::from_millis(20));
                 error_much += 1;

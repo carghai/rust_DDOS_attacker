@@ -19,6 +19,9 @@ pub struct UnsafePubVar {
     pub amount_sent: f64,
     pub threads_on: f64,
     pub http_sender : reqwest::Client,
+    pub headers : Vec<String>,
+    pub headers_val : Vec<String>
+
 }
 
 pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| {
@@ -27,5 +30,7 @@ pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| {
         amount_sent: 0.0,
         threads_on: 0.0,
         http_sender : reqwest::Client::new(),
+        headers : vec![],
+        headers_val : vec![],
     }
 });
