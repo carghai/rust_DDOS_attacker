@@ -54,7 +54,7 @@ pub fn where_attack() -> AttackData {
                             }
                         }
                     }
-                    if check_amount == amount_looped as usize {
+                    if check_amount == amount_looped as usize && check_amount <= 3 {
                         break;
                     }
                 }
