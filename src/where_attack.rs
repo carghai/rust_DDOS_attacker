@@ -23,7 +23,7 @@ pub fn where_attack() -> AttackData {
     if !return_data.udp_mode {
         println!("Ai Mode?(y/n), This is helpful if you have a fast pc and/or you bottle neck is your wifi!");
         return_data.ai_mode = true_or_no();
-        println!("Headers?(supports 3 header like [headerKey1 headerVal1,headerKey2 headerVal2,headerKey3 headerVal3] you don't need to fill out and if you don't want this press n");
+        println!("Headers?(supports 3 header like [headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3] you don't need to fill out and if you don't want this press n");
         loop {
             let headers_unparsed = get_input().trim().to_owned();
             match &*headers_unparsed {
@@ -35,18 +35,16 @@ pub fn where_attack() -> AttackData {
                     let check_amount = parsing.clone().count();
                     let mut amount_looped: u8 = 0;
                     for unwrapped in parsing {
-                        let mut final_unwrap = unwrapped.split(' ');
-                        match final_unwrap.nth(0) {
+                        let mut final_unwrap = unwrapped.split('|');
+                        match final_unwrap.nth_back(0) {
                             None => {
                                 syntax_error();
-                                panic!()
                             }
                             Some(data) => unsafe {
                                 UNSAFE_PUB_VAR.headers.push(data.to_owned());
-                                match final_unwrap.nth(1) {
+                                match final_unwrap.next() {
                                     None => {
                                         syntax_error();
-                                        panic!()
                                     }
                                     Some(second_data) => {
                                         UNSAFE_PUB_VAR.headers_val.push(second_data.to_owned());
@@ -136,5 +134,5 @@ fn get_input() -> String {
 }
 
 fn syntax_error() {
-    println!("please make it like this [headerKey1 headerVal1,headerKey2 headerVal2,headerKey3 headerVal3] and try again")
+    println!("please make it like this [headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3] and try again")
 }
