@@ -49,7 +49,6 @@ pub(crate) async fn request() -> Result<Response, Error> {
         let mut https_builder = UNSAFE_PUB_VAR.http_sender
             .get(&UNSAFE_PUB_VAR.attack_url);
         for (index, header) in UNSAFE_PUB_VAR.headers.iter().enumerate() {
-            dbg!(&header);
             let use_header = UNSAFE_PUB_VAR.headers_val.get(index);
             match use_header {
                 None=> {
