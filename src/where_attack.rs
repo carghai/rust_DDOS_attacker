@@ -134,5 +134,9 @@ fn get_input() -> String {
 }
 
 fn syntax_error() {
-    println!("please make it like this [headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3] and try again")
+    println!("please make it like this [headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3] and try again");
+    unsafe {
+        UNSAFE_PUB_VAR.headers = vec![];
+        UNSAFE_PUB_VAR.headers_val = vec![];
+    }
 }
