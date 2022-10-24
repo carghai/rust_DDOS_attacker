@@ -45,7 +45,28 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
 
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        UNSAFE_PUB_VAR.http_sender.get(&UNSAFE_PUB_VAR.attack_url).send().await
+        UNSAFE_PUB_VAR.http_sender
+            .get(&UNSAFE_PUB_VAR.attack_url)
+            .header(UNSAFE_PUB_VAR.headers.get(0)
+                        .unwrap_or(&"".to_owned()),
+                    UNSAFE_PUB_VAR
+                        .headers_val
+                        .get(0)
+                        .unwrap_or(&"".to_owned()))
+            .header(UNSAFE_PUB_VAR.headers.get(1)
+                        .unwrap_or(&"".to_owned()),
+                    UNSAFE_PUB_VAR
+                        .headers_val
+                        .get(1)
+                        .unwrap_or(&"".to_owned()))
+            .header(UNSAFE_PUB_VAR.headers.get(2)
+                        .unwrap_or(&"".to_owned()),
+                    UNSAFE_PUB_VAR
+                        .headers_val
+                        .get(2)
+                        .unwrap_or(&"".to_owned()))
+            .send()
+            .await
     }
 }
 
@@ -63,7 +84,7 @@ pub(crate) fn udp() -> UdpSocket {
             Ok(data) => { return data; }
             Err(data) => {
                 if error_much > 10 {
-                    panic!("Failed when starting udp, please check 8080 port and try again\n {}" , data);
+                    panic!("Failed when starting udp, please check 8080 port and try again\n {}", data);
                 }
                 thread::sleep(time::Duration::from_millis(20));
                 error_much += 1;
