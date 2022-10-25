@@ -26,7 +26,7 @@ fn main_code(result: UdpSocket) {
                 Ok(data) => {
                     UNSAFE_PUB_VAR.amount_sent += 1;
                     println!(
-                        "Threads on {},\n UDP Connected,\n Request sent{}, sent mb of data: {}, Request sent per sec {} ",
+                        "Threads on {},\n UDP Connected,\n Request sent {}, sent mb of data: {}, Request sent per sec {} ",
                         UNSAFE_PUB_VAR.threads_on,
                         UNSAFE_PUB_VAR.amount_sent,
                         data,
@@ -35,7 +35,7 @@ fn main_code(result: UdpSocket) {
                 }
                 Err(data) => {
                     println!(
-                        "Threads on {},\n STATUS ERROR {},\n Request sent{}, Request sent per sec {} ",
+                        "Threads on {},\n STATUS ERROR {},\n Request sent {}, Request sent per sec {} ",
                         UNSAFE_PUB_VAR.threads_on,
                         data,
                         UNSAFE_PUB_VAR.amount_sent,

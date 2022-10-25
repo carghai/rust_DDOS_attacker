@@ -35,7 +35,7 @@ async fn core_attack() {
                         Ok(status_code) => unsafe {
                             UNSAFE_PUB_VAR.amount_sent += 1;
                             println!(
-                                "Threads on {},\n Status code {},\n Request sent{}\n Time Elapsed {}\n Amount Sent In a Second {}",
+                                "Threads on {},\n Status code {},\n Request sent {}\n Time Elapsed {}\n Amount Sent In a Second {}",
                                 UNSAFE_PUB_VAR.threads_on,
                                 status_code.status(),
                                 UNSAFE_PUB_VAR.amount_sent,
@@ -45,7 +45,7 @@ async fn core_attack() {
                         }
                         Err(data) => unsafe {
                             println!(
-                                "STATUS ERROR\n Threads on {},\n Status code {},\n Request sent{}\n Time Elapsed {}\n Amount Sent In a Second {}",
+                                "STATUS ERROR\n Threads on {},\n Status code {},\n Request sent {}\n Time Elapsed {}\n Amount Sent In a Second {}",
                                 UNSAFE_PUB_VAR.threads_on,
                                 data,
                                 UNSAFE_PUB_VAR.amount_sent,
