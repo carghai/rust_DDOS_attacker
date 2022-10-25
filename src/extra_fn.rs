@@ -29,7 +29,7 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
                 match final_check {
                     Err(e) => Err(e),
                     Ok(final_data) => unsafe {
-                        UNSAFE_PUB_VAR.http_sender = reqest_builder(final_data);
+                        UNSAFE_PUB_VAR.http_sender = request_builder(final_data);
                         Ok("Proxy has been set!".to_owned())
                     }
                 }
@@ -37,7 +37,7 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
         }
     } else {
         unsafe {
-            UNSAFE_PUB_VAR.http_sender = reqest_builder(reqwest::Client::new());
+            UNSAFE_PUB_VAR.http_sender = request_builder(reqwest::Client::new());
         }
         Ok("Set http client with no proxy successfully!".to_owned())
     }
@@ -56,7 +56,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
     }
 }
 
-pub(crate) fn reqest_builder(client: reqwest::Client) -> RequestBuilder {
+pub(crate) fn request_builder(client: reqwest::Client) -> RequestBuilder {
     unsafe {
         let mut https_builder = client
             .get(&UNSAFE_PUB_VAR.attack_url);
