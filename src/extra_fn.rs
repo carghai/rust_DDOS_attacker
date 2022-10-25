@@ -7,6 +7,7 @@ use reqwest::{Error, RequestBuilder, Response};
 use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
+    let time = 0;
     unsafe {
         UNSAFE_PUB_VAR.threads_on += 1.0;
         loop {

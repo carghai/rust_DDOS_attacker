@@ -19,10 +19,9 @@ pub struct UnsafePubVar {
     pub attack_url: String,
     pub amount_sent: f64,
     pub threads_on: f64,
-    pub http_sender : RequestBuilder,
-    pub headers : Vec<String>,
-    pub headers_val : Vec<String>
-
+    pub http_sender: RequestBuilder,
+    pub headers: Vec<String>,
+    pub headers_val: Vec<String>,
 }
 
 pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| {
@@ -30,8 +29,8 @@ pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| {
         attack_url: "".to_owned(),
         amount_sent: 0.0,
         threads_on: 0.0,
-        http_sender : reqwest::Client::new().get(""),
-        headers : vec![],
-        headers_val : vec![],
+        http_sender: reqwest::Client::new().get(""),
+        headers: vec![],
+        headers_val: vec![],
     }
 });
