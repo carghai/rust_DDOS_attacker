@@ -17,7 +17,8 @@ pub static SAFE_PUB_VAR: Lazy<Mutex<SafeGlobalVar>> = Lazy::new(|| {
 
 pub struct UnsafePubVar {
     pub attack_url: String,
-    pub amount_sent: f64,
+    pub amount_sent: u128,
+    pub time : u128,
     pub threads_on: f64,
     pub http_sender: RequestBuilder,
     pub headers: Vec<String>,
@@ -26,8 +27,9 @@ pub struct UnsafePubVar {
 
 pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| {
     UnsafePubVar {
+        time : 0,
         attack_url: "".to_owned(),
-        amount_sent: 0.0,
+        amount_sent: 0,
         threads_on: 0.0,
         http_sender: reqwest::Client::new().get(""),
         headers: vec![],

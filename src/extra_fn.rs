@@ -7,12 +7,12 @@ use reqwest::{Error, RequestBuilder, Response};
 use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
-    let time = 0;
     unsafe {
         UNSAFE_PUB_VAR.threads_on += 1.0;
         loop {
-            UNSAFE_PUB_VAR.amount_sent = 0.0;
-            thread::sleep(time::Duration::from_millis(10));
+            UNSAFE_PUB_VAR.amount_sent = 0;
+            thread::sleep(time::Duration::from_secs(1));
+            UNSAFE_PUB_VAR.time = UNSAFE_PUB_VAR.amount_sent;
         }
     }
 }

@@ -33,22 +33,24 @@ async fn core_attack() {
                     let (now, error_data) = (Instant::now(), request());
                     match error_data.await {
                         Ok(status_code) => unsafe {
-                            UNSAFE_PUB_VAR.amount_sent += 1.0;
+                            UNSAFE_PUB_VAR.amount_sent += 1;
                             println!(
-                                "Threads on {},\n Status code {},\n Time Passed for request {} sec,\n Request per 10 Millisecond {}",
+                                "Threads on {},\n Status code {},\n Request sent{}\n Time Elapsed {}\n Amount Sent In a Second {}",
                                 UNSAFE_PUB_VAR.threads_on,
                                 status_code.status(),
-                                now.elapsed().as_secs(),
                                 UNSAFE_PUB_VAR.amount_sent,
+                                now.elapsed().as_secs(),
+                                UNSAFE_PUB_VAR.time
                             );
                         }
                         Err(data) => unsafe {
                             println!(
-                                "Threads on {}, Status ERROR {}\n Time: {}\n Request per 10 Millisecond {}",
+                                "STATUS ERROR\n Threads on {},\n Status code {},\n Request sent{}\n Time Elapsed {}\n Amount Sent In a Second {}",
                                 UNSAFE_PUB_VAR.threads_on,
                                 data,
+                                UNSAFE_PUB_VAR.amount_sent,
                                 now.elapsed().as_secs(),
-                                UNSAFE_PUB_VAR.amount_sent
+                                UNSAFE_PUB_VAR.time
                             );
                         }
                     }

