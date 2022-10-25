@@ -2,7 +2,7 @@ use std::{thread, time};
 use std::net::UdpSocket;
 use std::sync::MutexGuard;
 
-use reqwest::{Error, Response};
+use reqwest::{Error, RequestBuilder, Response};
 
 use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
 
@@ -29,7 +29,7 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
                 match final_check {
                     Err(e) => Err(e),
                     Ok(final_data) => unsafe {
-                        UNSAFE_PUB_VAR.http_sender = final_data;
+                        UNSAFE_PUB_VAR.http_sender = reqest_builder(final_data);
                         Ok("Proxy has been set!".to_owned())
                     }
                 }
@@ -37,7 +37,7 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
         }
     } else {
         unsafe {
-            UNSAFE_PUB_VAR.http_sender = reqwest::Client::new();
+            UNSAFE_PUB_VAR.http_sender = reqest_builder(reqwest::Client::new());
         }
         Ok("Set http client with no proxy successfully!".to_owned())
     }
@@ -45,22 +45,36 @@ pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
 
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        let mut https_builder = UNSAFE_PUB_VAR.http_sender
+        let request = UNSAFE_PUB_VAR.http_sender.try_clone();
+        match request {
+            Some(sender) => sender.send().await,
+            None => {
+                println!("Ram Error, Lower Threads");
+                reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url).send().await
+            }
+        }
+    }
+}
+
+pub(crate) fn reqest_builder(client: reqwest::Client) -> RequestBuilder {
+    unsafe {
+        let mut https_builder = client
             .get(&UNSAFE_PUB_VAR.attack_url);
         for (index, header) in UNSAFE_PUB_VAR.headers.iter().enumerate() {
             let use_header = UNSAFE_PUB_VAR.headers_val.get(index);
             match use_header {
-                None=> {
+                None => {
                     println!("Header Val Data Was Damaged, please restart the client but don't worry it is skipping this header")
-                },
-                Some(data) =>{
-                    https_builder = https_builder.header(header , data);
+                }
+                Some(data) => {
+                    https_builder = https_builder.header(header, data)
                 }
             }
         }
-        https_builder.send().await
+        https_builder
     }
 }
+
 
 pub(crate) fn add_start(mut val: MutexGuard<'static, SafeGlobalVar>) {
     val.thread_on += 1.0;
