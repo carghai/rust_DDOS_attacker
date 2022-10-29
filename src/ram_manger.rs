@@ -33,7 +33,7 @@ pub static SAFE_PUB_VAR: Lazy<Mutex<SafeGlobalVar>> = Lazy::new(|| {
 });
 
 pub struct UnsafePubVar {
-    pub attack_mode: bool,
+    pub proxy_mode: bool,
     pub attack_url: String,
     pub amount_sent: u128,
     pub time: u128,
@@ -52,6 +52,6 @@ pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| UnsafePubVar {
     http_sender: reqwest::Client::new().get(""),
     headers: vec![],
     headers_val: vec![],
-    attack_mode: false,
+    proxy_mode: false,
     proxy: vec![],
 });

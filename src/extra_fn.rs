@@ -1,5 +1,4 @@
 use std::{thread, time};
-
 use std::net::UdpSocket;
 use std::sync::MutexGuard;
 
@@ -20,23 +19,25 @@ pub(crate) fn time_function() {
     }
 }
 
-pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error > {
+pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error> {
     if proxy {
         if let Some(url) = vec_url.into_iter().next() {
-            return match  reqwest::Proxy::all(url) {
-                Err(e) => Err(e),
+            match reqwest::Proxy::all(url) {
+                Err(e) => { return Err(e); }
                 Ok(good) => {
                     let final_check = reqwest::Client::builder().proxy(good).build();
                     match final_check {
-                        Err(e) => Err(e),
+                        Err(e) => { return Err(e); }
                         Ok(final_data) => unsafe {
                             UNSAFE_PUB_VAR.http_sender = request_builder(final_data);
-                            return Ok("Proxy has been set!".to_owned());
                         },
                     }
                 }
             }
+        } else {
+            return Ok("Set http client with no proxy successfully!".to_owned());
         }
+        unsafe {UNSAFE_PUB_VAR.proxy_mode = true;}
         Ok("Proxy has been set!".to_owned())
     } else {
         unsafe {
@@ -48,7 +49,7 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
 
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        if !UNSAFE_PUB_VAR.attack_mode {
+        if !UNSAFE_PUB_VAR.proxy_mode {
             let request = UNSAFE_PUB_VAR.http_sender.try_clone();
             handle(request).await
         } else {
@@ -58,7 +59,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
     }
 }
 
-async fn handle (request : Option<RequestBuilder>) -> Result<Response, Error> {
+async fn handle(request: Option<RequestBuilder>) -> Result<Response, Error> {
     match request {
         Some(sender) => sender.send().await,
         None => {
