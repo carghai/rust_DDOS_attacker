@@ -64,11 +64,11 @@ pub fn where_attack() -> AttackData {
             let unparsed_str = get_input().trim().to_owned();
             match &*unparsed_str {
                 "n" => {
-                    println!("{}", proxy_set("", false).expect("Failed when setting http client"));
+                    println!("{}", proxy_set(vec![], false).expect("Failed when setting http client"));
                     break;
                 }
                 _ => {
-                    let error = proxy_set(unparsed_str.trim(), true);
+                    let error = proxy_set(vec![unparsed_str.trim()], true);
                     match error {
                         Err(e) => println!("{}", e),
                         Ok(yay) => {

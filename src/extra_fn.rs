@@ -20,22 +20,24 @@ pub(crate) fn time_function() {
     }
 }
 
-pub(crate) fn proxy_set(url: &str, proxy: bool) -> Result<String, Error> {
+pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error > {
     if proxy {
-        let proxy_set = reqwest::Proxy::all(url);
-        match proxy_set {
-            Err(e) => Err(e),
-            Ok(good) => {
-                let final_check = reqwest::Client::builder().proxy(good).build();
-                match final_check {
-                    Err(e) => Err(e),
-                    Ok(final_data) => unsafe {
-                        UNSAFE_PUB_VAR.http_sender = request_builder(final_data);
-                        Ok("Proxy has been set!".to_owned())
-                    },
+        if let Some(url) = vec_url.into_iter().next() {
+            return match  reqwest::Proxy::all(url) {
+                Err(e) => Err(e),
+                Ok(good) => {
+                    let final_check = reqwest::Client::builder().proxy(good).build();
+                    match final_check {
+                        Err(e) => Err(e),
+                        Ok(final_data) => unsafe {
+                            UNSAFE_PUB_VAR.http_sender = request_builder(final_data);
+                            return Ok("Proxy has been set!".to_owned());
+                        },
+                    }
                 }
             }
         }
+        Ok("Proxy has been set!".to_owned())
     } else {
         unsafe {
             UNSAFE_PUB_VAR.http_sender = request_builder(reqwest::Client::new());
