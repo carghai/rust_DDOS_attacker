@@ -1,12 +1,12 @@
 use std::{thread, time};
-use std::borrow::{Borrow, BorrowMut};
+
 use std::net::UdpSocket;
 use std::sync::MutexGuard;
 
 use rand::Rng;
 use reqwest::{Error, RequestBuilder, Response};
 
-use crate::ram_manger::{SAFE_PUB_VAR, SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
     let mut _check: u128 = 0;
@@ -50,8 +50,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
             let request = UNSAFE_PUB_VAR.http_sender.try_clone();
             handle(request).await
         } else {
-            let mut rng = rand::thread_rng();
-            let request = UNSAFE_PUB_VAR.proxy[rng.gen_range(0..=UNSAFE_PUB_VAR.proxy.len())].try_clone();
+            let request = UNSAFE_PUB_VAR.proxy[rand::thread_rng().gen_range(0..=UNSAFE_PUB_VAR.proxy.len())].try_clone();
             handle(request).await
         }
     }
