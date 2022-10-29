@@ -1,10 +1,12 @@
+use std::{thread, time};
+use std::borrow::{Borrow, BorrowMut};
 use std::net::UdpSocket;
 use std::sync::MutexGuard;
-use std::{thread, time};
 
+use rand::Rng;
 use reqwest::{Error, RequestBuilder, Response};
 
-use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::{SAFE_PUB_VAR, SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
     let mut _check: u128 = 0;
@@ -54,15 +56,16 @@ pub(crate) async fn request() -> Result<Response, Error> {
                 }
             }
         } else {
+            // let mut rng = rand::thread_rng();
             //todo make this random
             request_builder(
                 reqwest::Client::builder()
-                    .proxy(reqwest::Proxy::all("_").unwrap())
+                    // .proxy(reqwest::Proxy::all(SAFE_PUB_VARrng.gen_range(0..=SAFE_PUB_VAR.borrow().proxy.len()))).unwrap())
                     .build()
                     .unwrap(),
             )
-            .send()
-            .await
+                .send()
+                .await
         }
     }
 }

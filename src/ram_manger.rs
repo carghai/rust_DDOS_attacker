@@ -1,4 +1,4 @@
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard, PoisonError};
 
 use once_cell::sync::Lazy;
 use reqwest::RequestBuilder;
@@ -6,6 +6,23 @@ use reqwest::RequestBuilder;
 pub struct SafeGlobalVar {
     pub thread_on: f64,
     pub threads_allowed: f64,
+}
+
+impl SafeGlobalVar {
+    pub fn get() -> Option<MutexGuard<'static, SafeGlobalVar>> {
+        let mut error: u8 = 0;
+        loop {
+            match SAFE_PUB_VAR.lock() {
+                Ok(data) => { return Some(data); }
+                Err(_) => {
+                    error += 1;
+                    if error > 128 {
+                        return None;
+                    }
+                }
+            };
+        }
+    }
 }
 
 pub static SAFE_PUB_VAR: Lazy<Mutex<SafeGlobalVar>> = Lazy::new(|| {
@@ -24,6 +41,7 @@ pub struct UnsafePubVar {
     pub http_sender: RequestBuilder,
     pub headers: Vec<String>,
     pub headers_val: Vec<String>,
+    pub proxy: Vec<RequestBuilder>,
 }
 
 pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| UnsafePubVar {
@@ -35,4 +53,5 @@ pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| UnsafePubVar {
     headers: vec![],
     headers_val: vec![],
     attack_mode: false,
+    proxy: vec![],
 });

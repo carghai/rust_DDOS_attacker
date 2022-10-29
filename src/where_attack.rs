@@ -1,6 +1,5 @@
 use std::io;
 
-
 use crate::extra_fn::proxy_set;
 use crate::ram_manger::{SAFE_PUB_VAR, UNSAFE_PUB_VAR};
 
