@@ -1,4 +1,4 @@
-use std::sync::{Mutex, MutexGuard, PoisonError};
+use std::sync::{Mutex, MutexGuard, };
 
 use once_cell::sync::Lazy;
 use reqwest::RequestBuilder;

@@ -48,24 +48,21 @@ pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
         if !UNSAFE_PUB_VAR.attack_mode {
             let request = UNSAFE_PUB_VAR.http_sender.try_clone();
-            match request {
-                Some(sender) => sender.send().await,
-                None => {
-                    println!("Ram Error, Lower Threads");
-                    request_builder(reqwest::Client::new()).send().await
-                }
-            }
+            handle(request).await
         } else {
-            // let mut rng = rand::thread_rng();
-            //todo make this random
-            request_builder(
-                reqwest::Client::builder()
-                    // .proxy(reqwest::Proxy::all(SAFE_PUB_VARrng.gen_range(0..=SAFE_PUB_VAR.borrow().proxy.len()))).unwrap())
-                    .build()
-                    .unwrap(),
-            )
-                .send()
-                .await
+            let mut rng = rand::thread_rng();
+            let request = UNSAFE_PUB_VAR.proxy[rng.gen_range(0..=UNSAFE_PUB_VAR.proxy.len())].try_clone();
+            handle(request).await
+        }
+    }
+}
+
+async fn handle (request : Option<RequestBuilder>) -> Result<Response, Error> {
+    match request {
+        Some(sender) => sender.send().await,
+        None => {
+            println!("Ram Error, Lower Threads");
+            request_builder(reqwest::Client::new()).send().await
         }
     }
 }
