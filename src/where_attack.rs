@@ -1,6 +1,5 @@
 use std::io;
 
-
 use crate::extra_fn::proxy_set;
 use crate::ram_manger::{SAFE_PUB_VAR, UNSAFE_PUB_VAR};
 
@@ -33,7 +32,7 @@ pub fn where_attack() -> AttackData {
                 _ => {
                     let parsing = headers_unparsed.split(',');
                     let check_amount = parsing.clone().count();
-                    let mut amount_looped: u8 = 0;
+                    let mut amount_looped: u16 = 0;
                     for unwrapped in parsing {
                         let mut final_unwrap = unwrapped.split('|');
                         match final_unwrap.nth_back(0) {
@@ -61,21 +60,29 @@ pub fn where_attack() -> AttackData {
             };
         }
         loop {
-            println!("Proxy? (if you don't want one hit n)");
+            println!("Proxy? if you don't want one hit n however if do want one make sure it is this format: proxy1,proxy2,proxy3,proxy4");
             let unparsed_str = get_input().trim().to_owned();
             match &*unparsed_str {
                 "n" => {
-                    println!("{}", proxy_set("", false).expect("Failed when setting http client"));
+                    println!("{}", proxy_set(vec![], false).expect("Failed when setting http client"));
                     break;
                 }
                 _ => {
-                    let error = proxy_set(unparsed_str.trim(), true);
-                    match error {
-                        Err(e) => println!("{}", e),
-                        Ok(yay) => {
-                            println!("{}", yay);
-                            break;
+                    let loop_num = unparsed_str.split(',');
+                    let error_or_no = loop_num.clone().count();
+                    let mut looped: u32 = 0;
+                    for proxy in loop_num {
+                        let error = proxy_set(vec![proxy.trim()], true);
+                        match error {
+                            Err(e) => println!("{}", e),
+                            Ok(yay) => {
+                                println!("{}", yay);
+                                looped += 1;
+                            }
                         }
+                    }
+                    if error_or_no == looped as usize {
+                        break;
                     }
                 }
             }
