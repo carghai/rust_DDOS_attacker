@@ -29,7 +29,7 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
                     match final_check {
                         Err(e) => { return Err(e); }
                         Ok(final_data) => unsafe {
-                            UNSAFE_PUB_VAR.http_sender = request_builder(final_data);
+                            UNSAFE_PUB_VAR.client.push(request_builder(final_data));
                         },
                     }
                 }
@@ -37,11 +37,11 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
         } else {
             return Ok("Set http client with no proxy successfully!".to_owned());
         }
-        unsafe {UNSAFE_PUB_VAR.proxy_mode = true;}
+        unsafe { UNSAFE_PUB_VAR.proxy_mode = true; }
         Ok("Proxy has been set!".to_owned())
     } else {
         unsafe {
-            UNSAFE_PUB_VAR.http_sender = request_builder(reqwest::Client::new());
+            UNSAFE_PUB_VAR.client = vec![request_builder(reqwest::Client::new())];
         }
         Ok("Set http client with no proxy successfully!".to_owned())
     }
@@ -50,10 +50,10 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
         if !UNSAFE_PUB_VAR.proxy_mode {
-            let request = UNSAFE_PUB_VAR.http_sender.try_clone();
+            let request = UNSAFE_PUB_VAR.client.get(0).expect("please set http client correctly").try_clone();
             handle(request).await
         } else {
-            let request = UNSAFE_PUB_VAR.proxy[rand::thread_rng().gen_range(0..=UNSAFE_PUB_VAR.proxy.len())].try_clone();
+            let request = UNSAFE_PUB_VAR.client[rand::thread_rng().gen_range(0..=UNSAFE_PUB_VAR.client.len())].try_clone();
             handle(request).await
         }
     }

@@ -68,12 +68,15 @@ pub fn where_attack() -> AttackData {
                     break;
                 }
                 _ => {
-                    let error = proxy_set(vec![unparsed_str.trim()], true);
-                    match error {
-                        Err(e) => println!("{}", e),
-                        Ok(yay) => {
-                            println!("{}", yay);
-                            break;
+                    let loop_num = unparsed_str.split(',');
+                    for proxy in loop_num {
+                        let error = proxy_set(vec![proxy.trim()], true);
+                        match error {
+                            Err(e) => println!("{}", e),
+                            Ok(yay) => {
+                                println!("{}", yay);
+                                break;
+                            }
                         }
                     }
                 }
