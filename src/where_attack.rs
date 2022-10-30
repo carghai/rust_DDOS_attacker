@@ -60,7 +60,7 @@ pub fn where_attack() -> AttackData {
             };
         }
         loop {
-            println!("Proxy? (if you don't want one hit n)");
+            println!("Proxy? if you don't want one hit n however if do want one make sure it is this format: proxy1,proxy2,proxy3,proxy4");
             let unparsed_str = get_input().trim().to_owned();
             match &*unparsed_str {
                 "n" => {
