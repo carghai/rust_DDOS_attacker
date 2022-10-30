@@ -5,7 +5,7 @@ use std::sync::MutexGuard;
 use rand::Rng;
 use reqwest::{Error, RequestBuilder, Response};
 
-use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::{ERROR, SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
     let mut _check: u128 = 0;
@@ -51,27 +51,42 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
 }
 
 pub(crate) async fn request() -> Result<Response, Error> {
-    let err = "Data On Ram Was Bad, please restart";
     unsafe {
         if !UNSAFE_PUB_VAR.proxy_mode {
-            let request = UNSAFE_PUB_VAR.client.get(0).expect(err).try_clone();
-            handle(request).await
+            match UNSAFE_PUB_VAR.client.get(0) {
+                Some(_) => {
+                    handle(UNSAFE_PUB_VAR.client[0].try_clone().unwrap_or({
+                        println!("{}", ERROR.ram_error);
+                        reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)
+                    })).await
+                }
+                None => {
+                    println!("{}", ERROR.ram_error);
+                    handle(reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)).await
+                }
+            }
         } else {
-            let request = UNSAFE_PUB_VAR.client.get(rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len())).expect(err).try_clone();
-            handle(request).await
+            let rand = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len());
+            match UNSAFE_PUB_VAR.client.get(rand) {
+                Some(_) => {
+                    handle(UNSAFE_PUB_VAR.client[rand].try_clone().unwrap_or({
+                        println!("{}", ERROR.ram_error);
+                        reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)
+                    })).await
+                }
+                None => {
+                    println!("{}", ERROR.ram_error);
+                    handle(reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)).await
+                }
+            }
         }
     }
 }
 
-async fn handle(request: Option<RequestBuilder>) -> Result<Response, Error> {
-    match request {
-        Some(sender) => sender.send().await,
-        None => {
-            println!("Ram Error, Lower Threads");
-            request_builder(reqwest::Client::new()).send().await
-        }
-    }
+async fn handle(request: RequestBuilder) -> Result<Response, Error> {
+    request.send().await
 }
+
 
 pub(crate) fn request_builder(client: reqwest::Client) -> RequestBuilder {
     unsafe {
@@ -80,7 +95,7 @@ pub(crate) fn request_builder(client: reqwest::Client) -> RequestBuilder {
             let use_header = UNSAFE_PUB_VAR.headers_val.get(index);
             match use_header {
                 None => {
-                    println!("Header Val Data Was Damaged, please restart the client but don't worry it is skipping this header")
+                    println!("{}", ERROR.header_error)
                 }
                 Some(data) => https_builder = https_builder.header(header, data),
             }

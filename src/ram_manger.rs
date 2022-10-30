@@ -1,7 +1,20 @@
-use std::sync::{Mutex, };
+use std::sync::Mutex;
 
 use once_cell::sync::Lazy;
 use reqwest::RequestBuilder;
+
+pub struct BadErrors<'a> {
+    pub ram_error: &'a str,
+    pub header_error: &'a str,
+}
+
+pub const ERROR: BadErrors =
+    BadErrors {
+        ram_error: "RAM ERROR PLEASE RESTART, MAKING PLAIN REQUEST WITH NO HEADER OR PROXY!!!!!!!!",
+        header_error: "Header Val Data Was Damaged, please restart the client but don't worry it is skipping this header",
+    }
+;
+
 
 pub struct SafeGlobalVar {
     pub thread_on: f64,
