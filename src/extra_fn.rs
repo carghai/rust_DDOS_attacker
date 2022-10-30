@@ -53,7 +53,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
             let request = UNSAFE_PUB_VAR.client.get(0).expect("please set http client correctly").try_clone();
             handle(request).await
         } else {
-            let request = UNSAFE_PUB_VAR.client[rand::thread_rng().gen_range(0..=UNSAFE_PUB_VAR.client.len())].try_clone();
+            let request = UNSAFE_PUB_VAR.client[rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len())].try_clone();
             handle(request).await
         }
     }

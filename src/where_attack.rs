@@ -69,15 +69,20 @@ pub fn where_attack() -> AttackData {
                 }
                 _ => {
                     let loop_num = unparsed_str.split(',');
+                    let error_or_no = loop_num.clone().count();
+                    let mut looped: u32 = 0;
                     for proxy in loop_num {
                         let error = proxy_set(vec![proxy.trim()], true);
                         match error {
                             Err(e) => println!("{}", e),
                             Ok(yay) => {
                                 println!("{}", yay);
-                                break;
+                                looped += 1;
                             }
                         }
+                    }
+                    if error_or_no == looped as usize {
+                        break;
                     }
                 }
             }
