@@ -32,7 +32,7 @@ pub fn where_attack() -> AttackData {
                 _ => {
                     let parsing = headers_unparsed.split(',');
                     let check_amount = parsing.clone().count();
-                    let mut amount_looped: u8 = 0;
+                    let mut amount_looped: u16 = 0;
                     for unwrapped in parsing {
                         let mut final_unwrap = unwrapped.split('|');
                         match final_unwrap.nth_back(0) {
