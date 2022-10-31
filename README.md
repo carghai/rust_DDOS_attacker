@@ -25,6 +25,16 @@ then do
 cargo run --release
 ``  make sure you have open SLL installed!
 
+or if you want an exe
+``
+cargo build --release
+``
+then go in 
+``
+target/release
+``
+your should see a file name dos_attacker. That is your exe.
+
 # Legal Notice:
 
 ## I'M NOT LIABLE FOR ANY DAMAGE CAUSED, THIS IS A CONSTRUCTIVE TOOL
