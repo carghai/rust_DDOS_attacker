@@ -7,11 +7,19 @@ It even includes proxy's to hide your ip!
 
 ## What is this program? 
 
-It is a CLI program that spams requests through an url and overloads the url with requests.
+It is a CLI program that spams from UDP or HTTP and overloads the target with requests.
 
 ## Tests?
 
-I have tested with an i5 linux laptop and on stable internet I was able to take down a Replit hacker plan server.
+I have tested with an i5 linux laptop and on stable internet I was able to take down a Replit hacker plan server. I was also able to slow my home internet to a standstill.
+
+## What Is AI mode?
+
+It is exclusively for http and it optimizes the amount of threads for you. 
+
+## What is the header mode?
+
+It changes your headers to avoid being detected or for certain targets.
 
 ## How should I use it?
 
@@ -24,6 +32,17 @@ then do
 ``
 cargo run --release
 ``  make sure you have open SLL installed!
+
+
+or if you want a exe
+``
+cargo build --release
+``
+ then go in
+``
+target/release
+``
+you will see a file name dos_attacker.exe or dos_attacker, that is your binary.
 
 # Legal Notice:
 
