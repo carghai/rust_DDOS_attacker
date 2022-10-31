@@ -13,14 +13,14 @@ pub fn where_attack() -> AttackData {
         ai_mode: false,
         udp_mode: false,
     };
-    println!("Where to attack?(give url)");
+    println!("Where to attack?(give url or ip with port for udp)");
     unsafe {
         UNSAFE_PUB_VAR.attack_url = get_input().trim().to_owned();
     }
     println!("Do you want to use UDP(y or n)");
     return_data.udp_mode = true_or_no();
     if !return_data.udp_mode {
-        println!("Ai Mode?(y/n), This is helpful if you have a fast pc and/or you bottle neck is your wifi!");
+        println!("Ai Mode?(y/n), This is optimizes your threads for you");
         return_data.ai_mode = true_or_no();
         println!("Headers?(supports headers like headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3 you don't need to fill out and if you don't want this press n");
         loop {
@@ -91,7 +91,7 @@ pub fn where_attack() -> AttackData {
         return_data.ai_mode = false;
     }
     loop {
-        println!("Threads? (if you get a dns error lower threads)");
+        println!("Threads? (if you get a dns error lower threads or it will hurt performance)");
         let unparsed_str: Result<u64, std::num::ParseIntError> = get_input().trim().parse();
         match unparsed_str {
             Ok(num) => {
