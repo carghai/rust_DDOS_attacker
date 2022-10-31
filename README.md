@@ -25,6 +25,7 @@ then do
 cargo run --release
 ``  make sure you have open SLL installed!
 
+
 or if you want an exe
 ``
 cargo build --release
