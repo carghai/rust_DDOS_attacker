@@ -54,6 +54,7 @@ pub struct UnsafePubVar {
     pub headers: Vec<String>,
     pub headers_val: Vec<String>,
     pub client: Vec<RequestBuilder>,
+
 }
 
 pub static mut UNSAFE_PUB_VAR: Lazy<UnsafePubVar> = Lazy::new(|| UnsafePubVar {

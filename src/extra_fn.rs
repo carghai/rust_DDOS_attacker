@@ -1,4 +1,5 @@
 use std::{thread, time};
+use std::borrow::BorrowMut;
 use std::net::UdpSocket;
 use std::sync::MutexGuard;
 
@@ -34,17 +35,12 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
                     }
                 }
             }
-        } else {
-            unsafe {
-                UNSAFE_PUB_VAR.client = vec![request_builder(reqwest::Client::new())];
-            }
-            return Ok("Set http client with no proxy successfully!".to_owned());
         }
         unsafe { UNSAFE_PUB_VAR.proxy_mode = true; }
         Ok("Proxy has been set!".to_owned())
     } else {
         unsafe {
-            UNSAFE_PUB_VAR.client = vec![request_builder(reqwest::Client::new())];
+            UNSAFE_PUB_VAR.client.push(request_builder(reqwest::Client::new()));
         }
         Ok("Set http client with no proxy successfully!".to_owned())
     }
@@ -55,8 +51,9 @@ pub(crate) async fn request() -> Result<Response, Error> {
         if !UNSAFE_PUB_VAR.proxy_mode {
             match UNSAFE_PUB_VAR.client.get(0) {
                 Some(_) => {
+                    // Todo look into this
                     handle(UNSAFE_PUB_VAR.client[0].try_clone().unwrap_or({
-                        println!("{}", ERROR.ram_error);
+                        println!("Failed when cloning var, ram error most likely",);
                         reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)
                     })).await
                 }
