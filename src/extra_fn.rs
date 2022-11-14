@@ -1,5 +1,4 @@
 use std::{thread, time};
-use std::borrow::BorrowMut;
 use std::net::UdpSocket;
 use std::sync::MutexGuard;
 
@@ -40,7 +39,9 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
         Ok("Proxy has been set!".to_owned())
     } else {
         unsafe {
-            UNSAFE_PUB_VAR.client.push(request_builder(reqwest::Client::new()));
+            for _ in 0..100 {
+                UNSAFE_PUB_VAR.client.push(request_builder(reqwest::Client::new()))
+            }
         }
         Ok("Set http client with no proxy successfully!".to_owned())
     }
@@ -48,33 +49,18 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
 
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        if !UNSAFE_PUB_VAR.proxy_mode {
-            match UNSAFE_PUB_VAR.client.get(0) {
-                Some(_) => {
-                    // Todo look into this
-                    handle(UNSAFE_PUB_VAR.client[0].try_clone().unwrap_or({
-                        println!("Failed when cloning var, ram error most likely",);
-                        reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)
-                    })).await
-                }
-                None => {
-                    println!("{}", ERROR.ram_error);
-                    handle(reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)).await
+        let rand = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len());
+        match UNSAFE_PUB_VAR.client.get(rand) {
+            Some(_) => {
+                loop {
+                    if let Some(request) = UNSAFE_PUB_VAR.client[rand].try_clone() {
+                        return handle(request).await;
+                    }
                 }
             }
-        } else {
-            let rand = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len());
-            match UNSAFE_PUB_VAR.client.get(rand) {
-                Some(_) => {
-                    handle(UNSAFE_PUB_VAR.client[rand].try_clone().unwrap_or({
-                        println!("{}", ERROR.ram_error);
-                        reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)
-                    })).await
-                }
-                None => {
-                    println!("{}", ERROR.ram_error);
-                    handle(reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)).await
-                }
+            None => {
+                println!("{}", ERROR.ram_error);
+                handle(reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)).await
             }
         }
     }

@@ -1,7 +1,7 @@
 use std::sync::Mutex;
 
 use once_cell::sync::Lazy;
-use reqwest::RequestBuilder;
+use reqwest::{RequestBuilder};
 
 pub struct BadErrors<'a> {
     pub ram_error: &'a str,
