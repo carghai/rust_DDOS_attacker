@@ -5,7 +5,7 @@ use std::sync::MutexGuard;
 use rand::Rng;
 use reqwest::{Error, RequestBuilder, Response};
 
-use crate::ram_manger::{ERROR, SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
     let mut _check: u128 = 0;
