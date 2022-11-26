@@ -7,24 +7,6 @@ pub struct SafeGlobalVar {
     pub thread_on: f64,
     pub threads_allowed: f64,
 }
-
-// impl SafeGlobalVar {
-//     pub fn get() -> Option<MutexGuard<'static, SafeGlobalVar>> {
-//         let mut error: u8 = 0;
-//         loop {
-//             match SAFE_PUB_VAR.lock() {
-//                 Ok(data) => { return Some(data); }
-//                 Err(_) => {
-//                     error += 1;
-//                     if error > 128 {
-//                         return None;
-//                     }
-//                 }
-//             };
-//         }
-//     }
-// }
-
 pub static SAFE_PUB_VAR: Lazy<Mutex<SafeGlobalVar>> = Lazy::new(|| {
     Mutex::new(SafeGlobalVar {
         thread_on: 0.0,
