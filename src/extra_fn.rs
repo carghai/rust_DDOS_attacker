@@ -55,7 +55,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
             if rng == 0_usize {
                 let error = "error".to_owned();
                 return_header = error.clone();
-                return_header_val = error.clone();
+                return_header_val = error;
             } else {
                 return_header = UNSAFE_PUB_VAR.headers[rng].clone();
                 return_header_val = UNSAFE_PUB_VAR.headers_val[rng].clone();
