@@ -22,13 +22,16 @@ pub fn where_attack() -> AttackData {
     if !return_data.udp_mode {
         println!("Ai Mode?(y/n), This is optimizes your threads for you");
         return_data.ai_mode = true_or_no();
-        println!("Headers?(supports headers like headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3 you don't need to fill out and if you don't want this press n");
+        println!("Rng Headers?(supports headers like headerKey1|headerVal1,headerKey2|headerVal2,headerKey3|headerVal3 you don't need to fill out and if you don't want this press n for more info enter e");
         loop {
             let headers_unparsed = get_input().trim().to_owned();
             match &*headers_unparsed {
+                "e" => {
+                    println!("It uses one the headers above to send your request randomly making it hard to detect a ddos")
+                },
                 "n" => {
                     break;
-                }
+                },
                 _ => {
                     let parsing = headers_unparsed.split(',');
                     let check_amount = parsing.clone().count();

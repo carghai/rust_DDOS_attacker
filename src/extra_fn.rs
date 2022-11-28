@@ -5,7 +5,7 @@ use std::sync::MutexGuard;
 use rand::Rng;
 use reqwest::{Error, RequestBuilder, Response};
 
-use crate::ram_manger::{ERROR, SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub(crate) fn time_function() {
     let mut _check: u128 = 0;
@@ -49,41 +49,41 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
 
 pub(crate) async fn request() -> Result<Response, Error> {
     unsafe {
-        let rand = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len());
-        match UNSAFE_PUB_VAR.client.get(rand) {
-            Some(_) => {
-                loop {
-                    if let Some(request) = UNSAFE_PUB_VAR.client[rand].try_clone() {
-                        return handle(request).await;
-                    }
-                }
+        let (header, header_val) = {
+            let (return_header, return_header_val);
+            let rng = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.headers.len());
+            if rng == 0_usize {
+                let error = "error".to_owned();
+                return_header = error.clone();
+                return_header_val = error;
+            } else {
+                return_header = UNSAFE_PUB_VAR.headers[rng].clone();
+                return_header_val = UNSAFE_PUB_VAR.headers_val[rng].clone();
             }
-            None => {
-                println!("{}", ERROR.ram_error);
-                handle(reqwest::Client::new().get(&UNSAFE_PUB_VAR.attack_url)).await
+            (return_header, return_header_val)
+        };
+        loop {
+            let rand = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.client.len());
+            if UNSAFE_PUB_VAR.client.get(rand).is_some() {
+                if let Some(request) = UNSAFE_PUB_VAR.client[rand].try_clone() {
+                    return handle(request, header, header_val).await;
+                }
             }
         }
     }
 }
 
-async fn handle(request: RequestBuilder) -> Result<Response, Error> {
-    request.send().await
+async fn handle(request: RequestBuilder, header: String, val: String) -> Result<Response, Error> {
+    if header == *"error" {
+        request.send().await
+    } else {
+        request.header(header, val).send().await
+    }
 }
-
 
 pub(crate) fn request_builder(client: reqwest::Client) -> RequestBuilder {
     unsafe {
-        let mut https_builder = client.get(&UNSAFE_PUB_VAR.attack_url);
-        for (index, header) in UNSAFE_PUB_VAR.headers.iter().enumerate() {
-            let use_header = UNSAFE_PUB_VAR.headers_val.get(index);
-            match use_header {
-                None => {
-                    println!("{}", ERROR.header_error)
-                }
-                Some(data) => https_builder = https_builder.header(header, data),
-            }
-        }
-        https_builder
+        client.get(&UNSAFE_PUB_VAR.attack_url)
     }
 }
 
