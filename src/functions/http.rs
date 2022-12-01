@@ -1,4 +1,12 @@
-pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error> {
+
+use std::io::Error;
+
+use rand::Rng;
+use reqwest::{Response, RequestBuilder};
+
+use crate::ram_manger::{UNSAFE_PUB_VAR};
+
+pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, reqwest::Error> {
     if proxy {
         if let Some(url) = vec_url.into_iter().next() {
             match reqwest::Proxy::all(url) {
@@ -8,7 +16,7 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
                     match final_check {
                         Err(e) => { return Err(e); }
                         Ok(final_data) => unsafe {
-                            UNSAFE_PUB_VAR.client.push(request_builder(final_data));
+                            UNSAFE_PUB_VAR.client.push(request_builder(final_data)); 
                         },
                     }
                 }
@@ -26,7 +34,7 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
     }
 }
 
-pub(crate) async fn request() -> Result<Response, Error> {
+pub(crate) async fn request() -> Result<Response, reqwest::Error> {
     unsafe {
         let (header, header_val) = {
             let (return_header, return_header_val);
@@ -52,7 +60,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
     }
 }
 
-async fn handle(request: RequestBuilder, header: String, val: String) -> Result<Response, Error> {
+async fn handle(request: RequestBuilder, header: String, val: String) -> Result<Response, reqwest::Error> {
     if header == *"error" {
         request.send().await
     } else {
