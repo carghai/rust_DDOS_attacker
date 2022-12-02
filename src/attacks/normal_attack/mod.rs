@@ -1,6 +1,8 @@
 use tokio::time::Instant;
 
-use crate::extra_fn::{add_start, request, time_function, udp};
+use crate::functions::http::request;
+use crate::functions::thread_mangers::{add_start, time_function};
+use crate::functions::udp::udp;
 use crate::ram_manger::{SAFE_PUB_VAR, UNSAFE_PUB_VAR};
 use crate::where_attack::AttackData;
 

@@ -1,25 +1,9 @@
-use std::{thread, time};
-use std::net::UdpSocket;
-use std::sync::MutexGuard;
-
 use rand::Rng;
-use reqwest::{Error, RequestBuilder, Response};
+use reqwest::{Response, RequestBuilder};
 
-use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::{UNSAFE_PUB_VAR};
 
-pub(crate) fn time_function() {
-    let mut _check: u128 = 0;
-    unsafe {
-        UNSAFE_PUB_VAR.threads_on += 1.0;
-        loop {
-            _check = UNSAFE_PUB_VAR.amount_sent;
-            thread::sleep(time::Duration::from_secs(1));
-            UNSAFE_PUB_VAR.time = UNSAFE_PUB_VAR.amount_sent - _check;
-        }
-    }
-}
-
-pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error> {
+pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, reqwest::Error> {
     if proxy {
         if let Some(url) = vec_url.into_iter().next() {
             match reqwest::Proxy::all(url) {
@@ -29,7 +13,7 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
                     match final_check {
                         Err(e) => { return Err(e); }
                         Ok(final_data) => unsafe {
-                            UNSAFE_PUB_VAR.client.push(request_builder(final_data));
+                            UNSAFE_PUB_VAR.client.push(request_builder(final_data)); 
                         },
                     }
                 }
@@ -47,16 +31,16 @@ pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, Error
     }
 }
 
-pub(crate) async fn request() -> Result<Response, Error> {
+pub(crate) async fn request() -> Result<Response, reqwest::Error> {
     unsafe {
         let (header, header_val) = {
             let (return_header, return_header_val);
-            let rng = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.headers.len());
-            if rng == 0_usize {
+            if 0 == UNSAFE_PUB_VAR.headers.len() {
                 let error = "error".to_owned();
                 return_header = error.clone();
                 return_header_val = error;
             } else {
+                let rng = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.headers.len());
                 return_header = UNSAFE_PUB_VAR.headers[rng].clone();
                 return_header_val = UNSAFE_PUB_VAR.headers_val[rng].clone();
             }
@@ -73,7 +57,7 @@ pub(crate) async fn request() -> Result<Response, Error> {
     }
 }
 
-async fn handle(request: RequestBuilder, header: String, val: String) -> Result<Response, Error> {
+async fn handle(request: RequestBuilder, header: String, val: String) -> Result<Response, reqwest::Error> {
     if header == *"error" {
         request.send().await
     } else {
@@ -84,33 +68,5 @@ async fn handle(request: RequestBuilder, header: String, val: String) -> Result<
 pub(crate) fn request_builder(client: reqwest::Client) -> RequestBuilder {
     unsafe {
         client.get(&UNSAFE_PUB_VAR.attack_url)
-    }
-}
-
-pub(crate) fn add_start(mut val: MutexGuard<'static, SafeGlobalVar>) {
-    val.thread_on += 1.0;
-    unsafe {
-        UNSAFE_PUB_VAR.threads_on += 1.0;
-    }
-}
-
-pub(crate) fn udp() -> UdpSocket {
-    let mut error_much: u8 = 0;
-    loop {
-        match UdpSocket::bind("0.0.0.0:8080") {
-            Ok(data) => {
-                return data;
-            }
-            Err(data) => {
-                if error_much > 10 {
-                    panic!(
-                        "Failed when starting udp, please check 8080 port and try again\n {}",
-                        data
-                    );
-                }
-                thread::sleep(time::Duration::from_millis(20));
-                error_much += 1;
-            }
-        }
     }
 }

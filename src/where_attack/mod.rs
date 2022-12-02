@@ -1,6 +1,6 @@
 use std::io;
+use crate::functions::http::proxy_set;
 
-use crate::extra_fn::proxy_set;
 use crate::ram_manger::{SAFE_PUB_VAR, UNSAFE_PUB_VAR};
 
 pub struct AttackData {
