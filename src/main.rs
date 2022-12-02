@@ -1,10 +1,11 @@
 extern crate core;
 
-mod normal_attack;
+use crate::attacks::{ai_attack, normal_attack};
+
 mod ram_manger;
 mod where_attack;
 pub mod functions;
-mod ai_attack;
+pub mod attacks;
 
 #[tokio::main]
 async fn main() {

@@ -1,8 +1,9 @@
 use std::sync::MutexGuard;
 
 use tokio::time::Instant;
+use crate::functions::http::request;
 
-use crate::extra_fn::{add_start, request, time_function};
+use crate::functions::thread_mangers::{add_start, time_function};
 use crate::ram_manger::{SAFE_PUB_VAR, SafeGlobalVar, UNSAFE_PUB_VAR};
 
 pub async fn start() {

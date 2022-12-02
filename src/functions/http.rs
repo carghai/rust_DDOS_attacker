@@ -1,6 +1,3 @@
-
-use std::io::Error;
-
 use rand::Rng;
 use reqwest::{Response, RequestBuilder};
 

@@ -1,7 +1,7 @@
 use std::net::UdpSocket;
 use std::thread;
 
-use crate::functions::threadmangers::{add_start, time_function};
+use crate::functions::thread_mangers::{add_start, time_function};
 use crate::ram_manger::{SAFE_PUB_VAR, UNSAFE_PUB_VAR};
 
 pub fn core_attack(result: UdpSocket) {
