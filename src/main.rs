@@ -2,7 +2,7 @@ extern crate core;
 
 use crate::attacks::{ai, normal};
 
-mod ram_manger;
+mod ram_var;
 mod where_attack;
 pub mod functions;
 pub mod attacks;

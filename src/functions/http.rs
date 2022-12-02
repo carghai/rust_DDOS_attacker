@@ -1,7 +1,7 @@
 use rand::Rng;
 use reqwest::{RequestBuilder, Response};
 
-use crate::ram_manger::not_safe::UNSAFE_PUB_VAR;
+use crate::ram_var::not_safe::UNSAFE_PUB_VAR;
 
 pub(crate) fn proxy_set(vec_url: Vec<&str>, proxy: bool) -> Result<String, reqwest::Error> {
     if proxy {

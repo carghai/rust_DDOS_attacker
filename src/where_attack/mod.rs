@@ -1,8 +1,8 @@
 use std::io;
 use crate::functions::http::proxy_set;
 
-use crate::ram_manger::not_safe::UNSAFE_PUB_VAR;
-use crate::ram_manger::safe::SAFE_PUB_VAR;
+use crate::ram_var::not_safe::UNSAFE_PUB_VAR;
+use crate::ram_var::safe::SAFE_PUB_VAR;
 
 pub struct AttackData {
     pub ai_mode: bool,

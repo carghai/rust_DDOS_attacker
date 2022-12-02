@@ -4,8 +4,8 @@ use tokio::time::Instant;
 use crate::functions::http::request;
 
 use crate::functions::thread_mangers::{add_start, time_function};
-use crate::ram_manger::not_safe::UNSAFE_PUB_VAR;
-use crate::ram_manger::safe::{SAFE_PUB_VAR, SafeGlobalVar};
+use crate::ram_var::not_safe::UNSAFE_PUB_VAR;
+use crate::ram_var::safe::{SAFE_PUB_VAR, SafeGlobalVar};
 
 pub async fn start() {
     tokio::spawn(async {
