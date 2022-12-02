@@ -1,6 +1,7 @@
 use std::{thread, time};
 use std::sync::MutexGuard;
-use crate::ram_manger::{SafeGlobalVar, UNSAFE_PUB_VAR};
+use crate::ram_manger::not_safe::UNSAFE_PUB_VAR;
+use crate::ram_manger::safe::SafeGlobalVar;
 
 pub(crate) fn time_function() {
     let mut _check: u128 = 0;

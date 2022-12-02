@@ -1,6 +1,6 @@
 extern crate core;
 
-use crate::attacks::{ai_attack, normal_attack};
+use crate::attacks::{ai, normal};
 
 mod ram_manger;
 mod where_attack;
@@ -11,9 +11,9 @@ pub mod attacks;
 async fn main() {
     let init_data = where_attack::where_attack();
     if init_data.ai_mode {
-        ai_attack::start().await;
+        ai::start().await;
     } else {
-        normal_attack::start(init_data).await;
+        normal::start(init_data).await;
     }
 }
 

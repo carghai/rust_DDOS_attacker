@@ -1,2 +1,2 @@
-pub mod ai_attack;
-pub mod normal_attack;
+pub mod ai;
+pub mod normal;
