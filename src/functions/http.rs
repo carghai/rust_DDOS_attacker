@@ -35,12 +35,12 @@ pub(crate) async fn request() -> Result<Response, reqwest::Error> {
     unsafe {
         let (header, header_val) = {
             let (return_header, return_header_val);
-            let rng = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.headers.len());
-            if rng == 0_usize {
+            if 0 == UNSAFE_PUB_VAR.headers.len() {
                 let error = "error".to_owned();
                 return_header = error.clone();
                 return_header_val = error;
             } else {
+                let rng = rand::thread_rng().gen_range(0..UNSAFE_PUB_VAR.headers.len());
                 return_header = UNSAFE_PUB_VAR.headers[rng].clone();
                 return_header_val = UNSAFE_PUB_VAR.headers_val[rng].clone();
             }
